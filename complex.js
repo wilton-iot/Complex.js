@@ -33,7 +33,7 @@
  *
  */
 
-(function(root) {
+define(["lodash/isFinite"], function(isFinite) {
 
   'use strict';
 
@@ -177,13 +177,13 @@
             z['re'] = a['re'];
             z['im'] = a['im'];
           } else if ('abs' in a && 'arg' in a) {
-            if (!Number.isFinite(a['abs']) && Number.isFinite(a['arg'])) {
+            if (!isFinite(a['abs']) && isFinite(a['arg'])) {
               return Complex['INFINITY'];
             }
             z['re'] = a['abs'] * Math.cos(a['arg']);
             z['im'] = a['abs'] * Math.sin(a['arg']);
           } else if ('r' in a && 'phi' in a) {
-            if (!Number.isFinite(a['r']) && Number.isFinite(a['phi'])) {
+            if (!isFinite(a['r']) && isFinite(a['phi'])) {
               return Complex['INFINITY'];
             }
             z['re'] = a['r'] * Math.cos(a['phi']);
@@ -581,7 +581,7 @@
       var b = this['im'];
 
       return new Complex(
-              Math.expm1(a) * Math.cos(b) + cosm1(b),
+              (Math.exp(a) - 1) * Math.cos(b) + cosm1(b),
               Math.exp(a) * Math.sin(b));
     },
 
@@ -1388,17 +1388,6 @@
   Complex['NAN'] = new Complex(NaN, NaN);
   Complex['EPSILON'] = 1e-16;
 
-  if (typeof define === 'function' && define['amd']) {
-    define([], function() {
-      return Complex;
-    });
-  } else if (typeof exports === 'object') {
-    Object.defineProperty(exports, "__esModule", {'value': true});
-    Complex['default'] = Complex;
-    Complex['Complex'] = Complex;
-    module['exports'] = Complex;
-  } else {
-    root['Complex'] = Complex;
-  }
+  return Complex;
 
-})(this);
+});
